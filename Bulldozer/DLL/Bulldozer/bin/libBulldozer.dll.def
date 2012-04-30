@@ -1,0 +1,16 @@
+EXPORTS
+    BZCollectableForPointer @1
+    BZCollectableInsert @2
+    BZCollectableRelease @3
+    BZCollectableReplace @4
+    BZCollectableStatic @5
+    BZCollectorCollect @6
+    BZCollectorInit @7
+    BZHashTableContains @8
+    BZHashTableCreate @9
+    BZHashTableDataForKey @10
+    BZHashTableDestroy @11
+    BZHashTableInsert @12
+    BZHashTableRemove @13
+    malloc_gc @14
+    realloc_gc @15
