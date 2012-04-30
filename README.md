@@ -7,5 +7,8 @@ This project was born when someone asked for an asynchronous way to load models 
 ### Bulldozer
 A simple prove of conecept Garbage Collector written in Lite-C and some C inside of an dll. It is a nice demonstration project to see how to use "normal" dlls and the WinAPI to dynamically link functions with exported symbols from it, but can't be used as a real garbage collector due to limitations in Lite-C. For example, the GC works by getting the address of the current stack frame and then working up to a known address at the top of the stack, however, the "known" address from the struct is extracted in the Lite-Cs main() function which sadly returns so its not a really good idea to assume that the address is still part of the stack. It also fails to work with wait(), since I can't check the stack snapshot the function creates and might end up freeing memory that shouldn't be freed.
 
+### Image Factory
+A procedural texture creation tool prototype I made together with [Marian Frische](http://marianfrische.com/) on an weekend. It was supposed to take part in the 5kb or less contest, but became way too large and in the end we never really finished it (which was actually more my fault than Marians, sorry about that!).
+
 ### Lite Foundation
 A OOP library with classes for everyday tasks, heavily influenced by the Foundation and Core Foundation frameworks on Mac OS X.

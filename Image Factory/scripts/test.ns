@@ -1,0 +1,18 @@
+var colorR1;
+var colorG1;
+var colorB1;
+
+var colorR2;
+var colorG2;
+var colorB2;
+
+var colorR;
+var colorG;
+var colorB;
+
+
+
+out_colorR = colorR1 + colorR2;
+out_colorG = colorG1 + colorG2;
+out_colorB = colorB1 + colorB2;
+
