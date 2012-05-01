@@ -83,10 +83,11 @@ STRING *str_create_gc(STRING *content)
 
 
 // Helper
-static long BZHandle = 0;
 
 void __BZInit()
 {
+	static long BZHandle = 0;
+	
 	if(BZHandle == 0)
 	{
 		BZHandle = LoadLibrary("Bulldozer.dll");
@@ -103,9 +104,6 @@ void __BZInit()
 	}
 }
 
-void __BZStub()
-{}
-
-#define BZInit do{int t; __BZInit(); BZCollectorInit(&t);}while(0); __BZStub
+#define BZInit() do {int t; __BZInit(); BZCollectorInit(&t);} while(0)
 
 #endif

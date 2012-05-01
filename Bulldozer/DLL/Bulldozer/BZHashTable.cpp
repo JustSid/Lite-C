@@ -101,54 +101,31 @@ BZBucket *BZHashTableFindBucket1(BZHashTable *table, void *key)
 	return NULL;
 }
 
-BZBucket *BZHashTableFindBucket2(BZHashTable *table, void *key)
+BZBucket *BZHashTableFindBucket2(BZHashTable *table, void *key, BZBucket *tbucket)
 {
 	intptr_t index = ((uintptr_t)key) % table->capacity;
 	BZBucket *bucket = table->buckets[index];
 
-	if(bucket)
-	{
-        if(bucket->key == key)
+
+    while(bucket)
+    {
+    	if(bucket->key == key)
             return bucket;
-        
-        while(bucket->next)
-        {
-            bucket = bucket->next;
-            
-            if(bucket->key == key)
-                return bucket;
-        }
+
+        bucket = bucket->next;
+    }
 
         
 
-		bucket->next = (BZBucket *)malloc(sizeof(BZBucket));
-		if(bucket->next)
-		{
-			bucket = bucket->next;
+    if(!tbucket)
+    	tbucket = (BZBucket *)malloc(sizeof(BZBucket));
 
-			bucket->key  = key;
-            bucket->data = NULL;
-			bucket->next = NULL;
+    bucket = tbucket;
+    bucket->next = table->buckets[index];
 
-			return bucket;
-		}
-	}
-	else
-	{
-		bucket = (BZBucket *)malloc(sizeof(BZBucket));
-		if(bucket)
-		{
-			bucket->key  = key;
-            bucket->data = NULL;
-			bucket->next = NULL;
-		}
+    table->buckets[index] = bucket;
 
-
-		table->buckets[index] = bucket;
-		return bucket;
-	}
-
-	return NULL;
+	return bucket;
 }
 
 
@@ -161,25 +138,19 @@ void BZHashTableRehash(BZHashTable *table, BZBucket **buckets, uint32_t count)
 		BZBucket *bucket = buckets[index];
 		BZBucket *tbucket;
 
-		if(bucket)
+		while(bucket)
 		{
-			while(bucket)
+			tbucket = bucket->next;
+
+			if(bucket->key)
 			{
-				tbucket = bucket;
+				bucket = BZHashTableFindBucket2(table, bucket->key, bucket);
 
-				if(bucket->key)
-				{
-					BZBucket *nbucket = BZHashTableFindBucket2(table, bucket->key);
-
-					nbucket->key  = bucket->key;
-                    nbucket->data = bucket->data;
-				}
-
-				bucket = bucket->next;
-				free(tbucket);
+				bucket->key  = bucket->key;
+                bucket->data = bucket->data;
 			}
 
-			free(bucket);
+			bucket = tbucket;
 		}
 	}
 
@@ -260,10 +231,11 @@ void BZHashTableCollapseIfNeeded(BZHashTable *table)
 
 void BZHashTableInsert(BZHashTable *table, void *key, void *data)
 {
-    BZBucket *bucket = BZHashTableFindBucket2(table, key);
+    BZBucket *bucket = BZHashTableFindBucket2(table, key, NULL);
     if(bucket)
     {
         bucket->data = data;
+        bucket->key  = key;
         
         table->count ++;
         BZHashTableExpandIfNeeded(table);
@@ -275,11 +247,10 @@ void BZHashTableRemove(BZHashTable *table, void *key)
     BZBucket *bucket = BZHashTableFindBucket1(table, key);
     if(bucket)
     {
-        table->count --;
-
-        bucket->key  = NULL;
+    	bucket->key  = NULL;
         bucket->data = NULL;
 
+        table->count --;
         BZHashTableCollapseIfNeeded(table);
     }
 }

@@ -147,7 +147,7 @@ void BZCollectorCollect(int maxCollections)
             break;
     }
 
-    collectableTable->noCollapse = 1;
+    collectableTable->noCollapse = 0;
     
     BZHashTableCollapseIfNeeded(collectableTable);
     BZHashTableDestroy(preserveTable);
